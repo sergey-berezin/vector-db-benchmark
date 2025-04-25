@@ -21,22 +21,25 @@ class CHVectorSearcher(BaseSearcher):
         cls.client = clickhouse_connect.driver.create_client(
             **get_db_config(connection_params)
         )
-        if distance == Distance.COSINE:
-            cls.query: str = (
-                "SELECT id, cosineDistance(embedding, {vector:Array(Float64)}) AS _score FROM items ORDER BY _score LIMIT {top:UInt8} OFFSET 1"
-            )
-        elif distance == Distance.L2:
-            cls.query: str = (
-                "SELECT id, L2Distance(embedding, {vector:Array(Float64)}) AS _score FROM items ORDER BY _score LIMIT {top:UInt8} OFFSET 1"
-            )
-        else:
-            raise NotImplementedError(f"Unsupported distance metric {cls.distance}")
+        cls.client.command(cmd="SET allow_experimental_vector_similarity_index = 1")
+#if distance == Distance.COSINE:
+        cls.query: str = (
+            "SELECT id, cosineDistance(embedding, {vector:Array(Float64)}) AS _score FROM items ORDER BY _score LIMIT {top:UInt8} OFFSET 1"
+        )
+        #elif distance == Distance.L2:
+        #    cls.query: str = (
+        #        "SELECT id, L2Distance(embedding, {vector:Array(Float64)}) AS _score FROM items ORDER BY _score LIMIT {top:UInt8} OFFSET 1"
+        #    )
+        #else:
+        #    raise NotImplementedError(f"Unsupported distance metric {cls.distance}")
 
     @classmethod
     def search_one(cls, query: Query, top) -> List[Tuple[int, float]]:
         # TODO: Use query.metaconditions for datasets with filtering
         query_summary: QueryResult = cls.client.query(
-            cls.query, parameters={"vector": query.vector, "top": top}
+            cls.query, 
+            parameters={"vector": query.vector, "top": top},
+            settings={"allow_experimental_vector_similarity_index": 1}
         )
         # print(type(query_summary.result_rows))
         # print(type(query_summary.result_rows[0]))

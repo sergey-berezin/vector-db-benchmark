@@ -29,42 +29,34 @@ from engine.clients.pgvector import (
     PgVectorUploader,
 )
 from engine.clients.qdrant import QdrantConfigurator, QdrantSearcher, QdrantUploader
-from engine.clients.redis import RedisConfigurator, RedisSearcher, RedisUploader
-from engine.clients.weaviate import (
-    WeaviateConfigurator,
-    WeaviateSearcher,
-    WeaviateUploader,
-)
+# from engine.clients.redis import RedisConfigurator, RedisSearcher, RedisUploade
 
 ENGINE_CONFIGURATORS = {
     "qdrant": QdrantConfigurator,
-    "weaviate": WeaviateConfigurator,
     "milvus": MilvusConfigurator,
     "elasticsearch": ElasticConfigurator,
     "opensearch": OpenSearchConfigurator,
-    "redis": RedisConfigurator,
+#   "redis": RedisConfigurator,
     "pgvector": PgVectorConfigurator,
     "clickhouse": CHVectorConfigurator,
 }
 
 ENGINE_UPLOADERS = {
     "qdrant": QdrantUploader,
-    "weaviate": WeaviateUploader,
     "milvus": MilvusUploader,
     "elasticsearch": ElasticUploader,
     "opensearch": OpenSearchUploader,
-    "redis": RedisUploader,
+#    "redis": RedisUploader,
     "pgvector": PgVectorUploader,
     "clickhouse": CHVectorUploader,
 }
 
 ENGINE_SEARCHERS = {
     "qdrant": QdrantSearcher,
-    "weaviate": WeaviateSearcher,
     "milvus": MilvusSearcher,
     "elasticsearch": ElasticSearcher,
     "opensearch": OpenSearchSearcher,
-    "redis": RedisSearcher,
+#    "redis": RedisSearcher,
     "pgvector": PgVectorSearcher,
     "clickhouse": CHVectorSearcher,
 }

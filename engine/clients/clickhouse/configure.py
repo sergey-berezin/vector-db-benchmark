@@ -25,13 +25,18 @@ class CHVectorConfigurator(BaseConfigurator):
             raise IncompatibilityError
 
         self.client.command(
+            cmd="SET allow_experimental_vector_similarity_index = 1")
+
+        self.client.command(
             cmd="""CREATE TABLE items (
                 id UInt64,
-                embedding Array(Float64)
+                embedding Array(Float64),
+                INDEX hnsw embedding TYPE vector_similarity('hnsw','cosineDistance',100,'f32',16,128)
                 )
                 ENGINE = MergeTree()
                 ORDER BY id
-                ;"""
+                ;""",
+            settings={"allow_experimental_vector_similarity_index":1}
         )
         self.client.close()
 
