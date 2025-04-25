@@ -10,7 +10,7 @@ from engine.clients.clickhouse.config import get_db_config
 class CHVectorConfigurator(BaseConfigurator):
     def __init__(self, host, collection_params: dict, connection_params: dict):
         super().__init__(host, collection_params, connection_params)
-        self.client = clickhouse_connect.driver.create_client(
+        self.client = clickhouse_connect.get_client(
             **get_db_config(connection_params)
         )
         print("configure connection created")
@@ -25,9 +25,6 @@ class CHVectorConfigurator(BaseConfigurator):
             raise IncompatibilityError
 
         self.client.command(
-            cmd="SET allow_experimental_vector_similarity_index = 1")
-
-        self.client.command(
             cmd="""CREATE TABLE items (
                 id UInt64,
                 embedding Array(Float64),
@@ -35,8 +32,7 @@ class CHVectorConfigurator(BaseConfigurator):
                 )
                 ENGINE = MergeTree()
                 ORDER BY id
-                ;""",
-            settings={"allow_experimental_vector_similarity_index":1}
+                ;"""
         )
         self.client.close()
 

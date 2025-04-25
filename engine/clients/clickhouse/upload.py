@@ -19,7 +19,7 @@ class CHVectorUploader(BaseUploader):
 
     @classmethod
     def init_client(cls, host, distance, connection_params, upload_params):
-        cls.client = clickhouse_connect.driver.create_client(
+        cls.client = clickhouse_connect.get_client(
             **get_db_config(connection_params)
         )
         cls.upload_params = upload_params
